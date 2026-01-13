@@ -9,14 +9,27 @@ Resources:
       AutoVerifiedAttributes:
         - email
 
+  ShopFastResourceServer:
+    Type: AWS::Cognito::UserPoolResourceServer
+    Properties:
+      Identifier: payment-service
+      Name: Payment Service
+      UserPoolId: !Ref ShopFastUserPool
+      Scopes:
+        - ScopeName: payments.create
+          ScopeDescription: Create payments
+        - ScopeName: payments.refund
+          ScopeDescription: Refund payments
+
   ShopFastUserPoolClient:
-      Type: AWS::Cognito::UserPoolClient
-      Properties:
-        ClientName: ClientA
-        UserPoolId: !Ref ShopFastUserPool
-        GenerateSecret: true
-        AllowedOAuthFlows:
-          - client_credentials
-        AllowedOAuthScopes:
-          - payments.create
-        AllowedOAuthFlowsUserPoolClient: true
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: ClientA
+      UserPoolId: !Ref ShopFastUserPool
+      GenerateSecret: true
+      AllowedOAuthFlows:
+        - client_credentials
+      AllowedOAuthScopes:
+        - payment-service/payments.create
+        - payment-service/payments.refund
+      AllowedOAuthFlowsUserPoolClient: true
