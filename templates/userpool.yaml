@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Cognito User Pool for ShopFast Auth
+
+Resources:
+  ShopFastUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: shopfast-auth
+      AutoVerifiedAttributes:
+        - email
+
+ShopFastUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: ClientA
+      UserPoolId: !Ref ShopFastUserPool
+      GenerateSecret: true
+      AllowedOAuthFlows:
+        - client_credentials
+      AllowedOAuthScopes:
+        - payments.create
+      AllowedOAuthFlowsUserPoolClient: true
