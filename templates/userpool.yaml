@@ -23,8 +23,9 @@ Resources:
 
   ShopFastUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
+    DependsOn: ShopFastResourceServer
     Properties:
-      ClientName: ClientA
+      ClientName: client_a
       UserPoolId: !Ref ShopFastUserPool
       GenerateSecret: true
       AllowedOAuthFlows:
