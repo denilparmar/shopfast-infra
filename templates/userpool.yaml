@@ -9,14 +9,14 @@ Resources:
       AutoVerifiedAttributes:
         - email
 
-ShopFastUserPoolClient:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      ClientName: ClientA
-      UserPoolId: !Ref ShopFastUserPool
-      GenerateSecret: true
-      AllowedOAuthFlows:
-        - client_credentials
-      AllowedOAuthScopes:
-        - payments.create
-      AllowedOAuthFlowsUserPoolClient: true
+  ShopFastUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ClientA
+        UserPoolId: !Ref ShopFastUserPool
+        GenerateSecret: true
+        AllowedOAuthFlows:
+          - client_credentials
+        AllowedOAuthScopes:
+          - payments.create
+        AllowedOAuthFlowsUserPoolClient: true
