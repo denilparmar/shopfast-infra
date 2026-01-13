@@ -21,7 +21,7 @@ Resources:
         - ScopeName: payments.refund
           ScopeDescription: Refund payments
 
-  ShopFastUserPoolClient:
+  ShopFastUserPoolClientA:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: ShopFastResourceServer
     Properties:
@@ -34,3 +34,28 @@ Resources:
         - payment-service/payments.create
         - payment-service/payments.refund
       AllowedOAuthFlowsUserPoolClient: true
+      
+Outputs:
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref ShopFastUserPool
+    Export:
+      Name: ShopFast-UserPoolId
+
+  UserPoolArn:
+    Description: Cognito User Pool ARN
+    Value: !GetAtt ShopFastUserPool.Arn
+    Export:
+      Name: ShopFast-UserPoolArn
+
+  UserPoolClientId:
+    Description: Cognito App Client ID A
+    Value: !Ref ShopFastUserPoolClientA
+    Export:
+      Name: ShopFast-UserPoolClientId
+
+  ResourceServerIdentifier:
+    Description: Cognito Resource Server Identifier
+    Value: payment-service
+    Export:
+      Name: ShopFast-ResourceServerIdentifier
