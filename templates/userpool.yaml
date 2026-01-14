@@ -37,18 +37,13 @@ Resources:
     Properties:
       ClientName: client-a
       UserPoolId: !Ref ShopFastUserPool
-
       GenerateSecret: true
-
       AllowedOAuthFlows:
         - client_credentials
-
       AllowedOAuthScopes:
         - payment-service/payments.create
         - payment-service/payments.refund
-
       AllowedOAuthFlowsUserPoolClient: true
-
       SupportedIdentityProviders:
         - COGNITO
 
@@ -61,7 +56,7 @@ Resources:
   ShopFastUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      Domain: shopfast-auth-domain
+      Domain: denil-shopfast
       UserPoolId: !Ref ShopFastUserPool
 
 Outputs:
@@ -82,7 +77,7 @@ Outputs:
     Description: Cognito App Client ID
     Value: !Ref ShopFastUserPoolClientA
     Export:
-      Name: ShopFast-UserPoolClientId
+      Name: ShopFast-UserPoolClientIdA
 
   ResourceServerIdentifier:
     Description: Cognito Resource Server Identifier
@@ -93,3 +88,5 @@ Outputs:
   CognitoDomain:
     Description: Cognito Hosted Domain
     Value: !Sub "https://${ShopFastUserPoolDomain}.auth.${AWS::Region}.amazoncognito.com"
+    Export:
+      Name: ShopFast-AuthDomain
