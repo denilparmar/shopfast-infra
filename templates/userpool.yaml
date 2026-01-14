@@ -1,7 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Cognito User Pool for ShopFast Auth
+Description: Cognito User Pool with OAuth2 Client Credentials for ShopFast
 
 Resources:
+
+  # ------------------------------------------------------------
+  # Cognito User Pool
+  # ------------------------------------------------------------
   ShopFastUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -9,6 +13,9 @@ Resources:
       AutoVerifiedAttributes:
         - email
 
+  # ------------------------------------------------------------
+  # Cognito Resource Server (Custom Scopes)
+  # ------------------------------------------------------------
   ShopFastResourceServer:
     Type: AWS::Cognito::UserPoolResourceServer
     Properties:
@@ -21,21 +28,44 @@ Resources:
         - ScopeName: payments.refund
           ScopeDescription: Refund payments
 
+  # ------------------------------------------------------------
+  # Cognito App Client (Client Credentials Flow)
+  # ------------------------------------------------------------
   ShopFastUserPoolClientA:
     Type: AWS::Cognito::UserPoolClient
     DependsOn: ShopFastResourceServer
     Properties:
-      ClientName: client_a
+      ClientName: client-a
       UserPoolId: !Ref ShopFastUserPool
+
       GenerateSecret: true
+
       AllowedOAuthFlows:
         - client_credentials
+
       AllowedOAuthScopes:
         - payment-service/payments.create
         - payment-service/payments.refund
+
       AllowedOAuthFlowsUserPoolClient: true
-      
+
+      SupportedIdentityProviders:
+        - COGNITO
+
+      # Explicitly disable user-based auth flows
+      ExplicitAuthFlows: []
+
+  # ------------------------------------------------------------
+  # Cognito Hosted Domain (REQUIRED for OAuth2)
+  # ------------------------------------------------------------
+  ShopFastUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: shopfast-auth-domain
+      UserPoolId: !Ref ShopFastUserPool
+
 Outputs:
+
   UserPoolId:
     Description: Cognito User Pool ID
     Value: !Ref ShopFastUserPool
@@ -49,7 +79,7 @@ Outputs:
       Name: ShopFast-UserPoolArn
 
   UserPoolClientId:
-    Description: Cognito App Client ID A
+    Description: Cognito App Client ID
     Value: !Ref ShopFastUserPoolClientA
     Export:
       Name: ShopFast-UserPoolClientId
@@ -59,3 +89,7 @@ Outputs:
     Value: payment-service
     Export:
       Name: ShopFast-ResourceServerIdentifier
+
+  CognitoDomain:
+    Description: Cognito Hosted Domain
+    Value: !Sub "https://${ShopFastUserPoolDomain}.auth.${AWS::Region}.amazoncognito.com"
