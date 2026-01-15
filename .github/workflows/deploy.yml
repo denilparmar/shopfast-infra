@@ -26,9 +26,9 @@ jobs:
       - name: Deploy CloudFormation stack
         run: |
           # Read values from params/dev.yaml
-          AUTH_DOMAIN_NAME=$(yq e '.AuthDomainName' params/dev.yaml)
-          STACK_NAME=$(yq e '.StackName' params/dev.yaml)
-          CERT_ARN=$(yq e '.ShopFastCognitoCert' params/dev.yaml)
+          AUTH_DOMAIN_NAME=$(yq eval '.AuthDomainName' params/dev.yaml)
+          STACK_NAME=$(yq eval '.StackName' params/dev.yaml)
+          CERT_ARN=$(yq eval '.ShopFastCognitoCert' params/dev.yaml)
 
           echo "Deploying stack $STACK_NAME with domain $AUTH_DOMAIN_NAME"
 
