@@ -63,8 +63,10 @@ Resources:
   ShopFastUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      Domain: denil-shopfast
+      Domain: !Ref DomainName
       UserPoolId: !Ref ShopFastUserPool
+      CustomDomainConfig:
+        CertificateArn: !Ref ShopFastCognitoCert
 
   ShopFastCognitoCert:
     Type: AWS::CertificateManager::Certificate
