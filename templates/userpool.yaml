@@ -2,11 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Cognito User Pool with OAuth2 Client Credentials for ShopFast
 
 Parameters:
-  DomainName:
+  AuthDomainName:
     Type: String
-    Default: auth.denilparmar.work
-    Description: my custom domain for Cognito
-  
+  ShopFastCognitoCert:
+    Type: String
 
 Resources:
 
@@ -63,19 +62,12 @@ Resources:
   ShopFastUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      Domain: !Ref DomainName
+      Domain: !Ref AuthDomainName
       UserPoolId: !Ref ShopFastUserPool
       CustomDomainConfig:
         CertificateArn: !Ref ShopFastCognitoCert
 
-  ShopFastCognitoCert:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Ref DomainName
-      ValidationMethod: DNS
-
 Outputs:
-
   UserPoolId:
     Description: Cognito User Pool ID
     Value: !Ref ShopFastUserPool
@@ -102,6 +94,6 @@ Outputs:
 
   CognitoDomain:
     Description: Cognito Hosted Domain
-    Value: !Sub "https://${DomainName}"
+    Value: !Sub "https://${AuthDomainName}"
     Export:
       Name: ShopFast-AuthDomain

@@ -20,9 +20,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Install yq
+        run: sudo apt-get update && sudo apt-get install -y yq
+
       - name: Deploy CloudFormation stack
         run: |
+          # Read values from params/dev.yaml
+          AUTH_DOMAIN_NAME=$(yq e '.AuthDomainName' params/dev.yaml)
+          STACK_NAME=$(yq e '.StackName' params/dev.yaml)
+          CERT_ARN=$(yq e '.ShopFastCognitoCert' params/dev.yaml)
+
+          echo "Deploying stack $STACK_NAME with domain $AUTH_DOMAIN_NAME"
+
           aws cloudformation deploy \
-            --stack-name shopfast-auth-stack \
+            --stack-name $STACK_NAME \
             --template-file templates/userpool.yaml \
-            --capabilities CAPABILITY_NAMED_IAM
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+              DomainName=$AUTH_DOMAIN_NAME \
+              CognitoCertArn=$CERT_ARN
+
+
