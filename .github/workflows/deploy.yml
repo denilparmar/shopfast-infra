@@ -20,8 +20,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Install yq
-        run: sudo apt-get update && sudo apt-get install -y yq
+      - name: Install yq v4
+        run: |
+          YQ_VERSION="v4.45.1"
+          wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq
+          chmod +x /usr/bin/yq
 
       - name: Deploy CloudFormation stack
         run: |
