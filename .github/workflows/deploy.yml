@@ -26,5 +26,10 @@ jobs:
             --stack-name $STACK_NAME \
             --template-file templates/userpool.yaml \
             --capabilities CAPABILITY_NAMED_IAM \
-            --parameter-overrides file://params/dev.json
+            --parameter-overrides \
+                StackName=auth-dev-stack \
+                AuthDomainName=auth.dev.denilparmar.work \
+                ShopFastCognitoCert=arn:aws:acm:us-east-1:388742983609:certificate/f3c4fe75-69fa-4d06-aa0a-36a3ce26c89e
+
+
 
