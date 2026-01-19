@@ -23,13 +23,13 @@ jobs:
       - name: Deploy CloudFormation stack
         run: |
           aws cloudformation deploy \
-            --stack-name auth-dev-stack \
+            --stack-name shopfast-auth-dev \
             --template-file templates/userpool.yaml \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
-                StackName=auth-dev-stack \
-                AuthDomainName=auth.dev.denilparmar.work \
-                ShopFastCognitoCert=arn:aws:acm:us-east-1:388742983609:certificate/f3c4fe75-69fa-4d06-aa0a-36a3ce26c89e
+                StackName=shopfast-auth-dev \
+                AuthDomainName=auth-dev.denilparmar.work \
+                ShopFastCognitoCert=arn:aws:acm:us-east-1:388742983609:certificate/05cf3755-c9f8-482f-950b-f683cd2cdf64
 
 
 
