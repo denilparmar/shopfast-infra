@@ -31,5 +31,14 @@ jobs:
                 AuthDomainName=auth2-dev.denilparmar.work \
                 ShopFastCognitoCert=arn:aws:acm:us-east-1:388742983609:certificate/e74d25c6-f80b-48d6-a819-7f2aae1709b3
 
+      - name: Deploy API Gateway Certificate stack
+        run: |
+          aws cloudformation deploy \
+            --stack-name shopfast-api-cert-dev \
+            --template-file templates/api-certificate.yaml \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+                ApiCustomDomainName=api-dev.denilparmar.work
+
 
 

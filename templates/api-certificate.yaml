@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ACM Certificate for ShopFast API Gateway Custom Domain
+
+Parameters:
+  ApiCustomDomainName:
+    Type: String
+    Description: "Custom domain name for API Gateway"
+
+Resources:
+
+  ShopFastApiCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref ApiCustomDomainName
+      ValidationMethod: DNS
+
+Outputs:
+  ShopFastApiCertificateArn:
+    Description: "ACM certificate ARN for API Gateway custom domain"
+    Value: !Ref ShopFastApiCertificate
+    Export:
+      Name: ShopFast-ApiCertificateArn
