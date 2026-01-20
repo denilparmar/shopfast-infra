@@ -49,5 +49,12 @@ jobs:
             --parameter-overrides \
                 TableName=Shopfast-Payments
 
-
+      - name: Deploy Stripe Secret
+        run: |
+          aws cloudformation deploy \
+            --stack-name shopfast-stripe-secret-dev \
+            --template-file templates/stripe-secret.yaml \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+                Environment=dev
 
