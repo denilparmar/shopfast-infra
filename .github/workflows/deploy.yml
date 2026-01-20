@@ -40,5 +40,14 @@ jobs:
             --parameter-overrides \
                 ApiCustomDomainName=api-dev.denilparmar.work
 
+      - name: Deploy Payments DynamoDB Table
+        run: |
+          aws cloudformation deploy \
+            --stack-name shopfast-dynamodb-table-dev \
+            --template-file templates/payments-dynamodb-table.yaml \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+                TableName=Shopfast-Payments
+
 
 

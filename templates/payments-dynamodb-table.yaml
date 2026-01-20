@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: DynamoDB table for Shopfast Secure Payment Microservice
+
+Parameters:
+  TableName:
+    Type: String
+    Default: Shopfast-Payments
+    Description: Name of the DynamoDB payments table
+
+Resources:
+  PaymentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref TableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: paymentId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: paymentId
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+Outputs:
+  PaymentsTableName:
+    Description: DynamoDB Payments table name
+    Value: !Ref PaymentsTable
+    Export:
+      Name: ShopFast-PaymentsTableName
+
+  PaymentsTableArn:
+    Description: DynamoDB Payments table ARN
+    Value: !GetAtt PaymentsTable.Arn
+    Export:
+      Name: ShopFast-PaymentsTableArn
