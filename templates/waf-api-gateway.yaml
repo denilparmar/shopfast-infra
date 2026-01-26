@@ -135,7 +135,11 @@ Outputs:
   WebACLArn:
     Description: ARN of the WAF Web ACL
     Value: !GetAtt ShopFastApiWebACL.Arn
+    Export:
+      Name: ShopFastApiWebACLArn
 
   WebACLName:
     Description: Name of the WAF Web ACL
     Value: !Ref ShopFastApiWebACL
+    Export:
+      Name: ShopFastApiWebACLName
