@@ -57,4 +57,11 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
                 Environment=dev
+      
+      - name: Deploy WebACL
+        run: |
+          aws cloudformation deploy \
+            --stack-name shopfast-waf-api-gateway \
+            --template-file templates/waf-api-gateway.yaml \
+            --capabilities CAPABILITY_NAMED_IAM \
 

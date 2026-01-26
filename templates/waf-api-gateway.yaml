@@ -1,0 +1,141 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: WAF v2 Web ACL for API Gateway
+
+Resources:
+  ShopFastApiWebACL:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      Name: api-waf
+      Scope: REGIONAL
+      DefaultAction:
+        Block: {}
+      VisibilityConfig:
+        CloudWatchMetricsEnabled: true
+        MetricName: api-waf
+        SampledRequestsEnabled: true
+
+      Rules:
+
+        # 1️⃣ AWS Managed Common Rules
+        - Name: AWSCommonRules
+          Priority: 1
+          OverrideAction:
+            None: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesCommonRuleSet
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: aws-common-rules
+            SampledRequestsEnabled: true
+
+        # 2️⃣ Known Bad Inputs
+        - Name: AWSKnownBadInputs
+          Priority: 2
+          OverrideAction:
+            None: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesKnownBadInputsRuleSet
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: aws-bad-inputs
+            SampledRequestsEnabled: true
+
+        # 3️⃣ Amazon IP Reputation
+        - Name: AWSIpReputation
+          Priority: 3
+          OverrideAction:
+            None: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesAmazonIpReputationList
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: aws-ip-reputation
+            SampledRequestsEnabled: true
+
+        # 4️⃣ Rate Limiting (1000 req / 5 min per IP)
+        - Name: RateLimitRule
+          Priority: 4
+          Action:
+            Block: {}
+          Statement:
+            RateBasedStatement:
+              Limit: 1000
+              AggregateKeyType: IP
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: rate-limit
+            SampledRequestsEnabled: true
+
+        # 5️⃣ Block Common Scanner Paths
+        - Name: BlockBadPaths
+          Priority: 5
+          Action:
+            Block: {}
+          Statement:
+            OrStatement:
+              Statements:
+                - ByteMatchStatement:
+                    SearchString: "/wp-admin"
+                    FieldToMatch:
+                      UriPath: {}
+                    PositionalConstraint: CONTAINS
+                    TextTransformations:
+                      - Priority: 0
+                        Type: NONE
+                - ByteMatchStatement:
+                    SearchString: "/phpmyadmin"
+                    FieldToMatch:
+                      UriPath: {}
+                    PositionalConstraint: CONTAINS
+                    TextTransformations:
+                      - Priority: 0
+                        Type: NONE
+                - ByteMatchStatement:
+                    SearchString: "/.env"
+                    FieldToMatch:
+                      UriPath: {}
+                    PositionalConstraint: CONTAINS
+                    TextTransformations:
+                      - Priority: 0
+                        Type: NONE
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: block-bad-paths
+            SampledRequestsEnabled: true
+
+        # 6️⃣ Enforce JSON APIs Only
+        - Name: EnforceJsonContentType
+          Priority: 6
+          Action:
+            Block: {}
+          Statement:
+            NotStatement:
+              Statement:
+                ByteMatchStatement:
+                  SearchString: "application/json"
+                  FieldToMatch:
+                    SingleHeader:
+                      Name: content-type
+                  PositionalConstraint: CONTAINS
+                  TextTransformations:
+                    - Priority: 0
+                      Type: LOWERCASE
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: enforce-json
+            SampledRequestsEnabled: true
+
+Outputs:
+  WebACLArn:
+    Description: ARN of the WAF Web ACL
+    Value: !GetAtt ShopFastApiWebACL.Arn
+
+  WebACLName:
+    Description: Name of the WAF Web ACL
+    Value: !Ref ShopFastApiWebACL
